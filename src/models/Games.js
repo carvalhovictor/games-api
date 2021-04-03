@@ -18,7 +18,7 @@ const GameSchema = new Schema({
 const Game = model('Game', GameSchema);
 
 module.exports = {
-    find: (criteria) => {
+    find: criteria => {
         const { q, limit, page, fields, orderBy, sortBy = 1 } = criteria;
         const skip = (page > 1) ? (page -1) * limit : 0;
         const query = Game.find();
@@ -33,4 +33,14 @@ module.exports = {
         if (orderBy) query.sort({ [orderBy]: sortBy });
         return query.exec();
     },
+    store: data => {
+        const game = new Game(data);
+        return game.save();
+    },
+    update: (id, data, options = { new: true }) => {
+        return Game.findOneAndUpdate({ _id: id }, data, options);
+    },
+    destroy: id => {
+        return Game.deleteOne({ _id: id });
+    }
 };
